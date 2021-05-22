@@ -11,38 +11,17 @@ console.log(__dirname);
 let rawdata = fs.readFileSync(
   // path.join(__dirname, "public/vietEmotGeoTopic_2.json"),
   // path.join(__dirname, "public/processed_data_feb_23.json"),
-  path.join(
-    __dirname,
-    "public/Mekong3_Filtered_Translated_227_processed.geojson"
-  ),
+  path.join(__dirname, "public/illinois_ethnicity.geojson"),
   {
     encoding: "utf-8",
   }
 );
 // console.log(rawdata);
 
-let topicTermsDict = fs.readFileSync(
-  // path.join(__dirname, "public/vietEmotGeoTopic2_topicDict.json"),
-  // path.join(__dirname, "public/topicTermDict_feb_23.json"),
-  path.join(
-    __dirname,
-    "public/Mekong3_Filtered_Translated_227_topicTermDict.json"
-  ),
-
-  {
-    encoding: "utf-8",
-  }
-);
 // console.log(topicTermsDict);
 
 let geojson = JSON.parse(rawdata);
-topicTermsDict = JSON.parse(topicTermsDict);
 
-// geojson.forEach((f) => {
-//   let date = moment(f["properties"]["date_time"]);
-//   f["properties"]["date"] = moment(f["properties"]["date_time"]);
-// });
-// console.log(geojson[0]);
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -53,8 +32,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.get("/api/data", (req, res) => {
   res.json(geojson);
 });
-
-app.get("/api/topics", (req, res) => res.json(topicTermsDict));
 
 if (process.env.NODE_ENV === "production") {
   // Serve any static files
