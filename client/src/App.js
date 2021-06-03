@@ -1,17 +1,20 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import { Container } from "@material-ui/core";
 import NavBar from "./components/nav/nav";
 import Map from "./components/map/map";
+import moment from "moment";
+import * as d3 from "d3";
 import axios from "axios";
 import * as turf from "@turf/turf";
 import "./App.css";
+import AppBar from "@material-ui/core/AppBar";
 
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { filter } from "d3";
 
 let borderColor = "grey";
 
-const styles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: "grid",
     gridTemplateColumns: "repeat(12,1fr)",
@@ -23,56 +26,47 @@ const styles = (theme) => ({
     margin: 0,
   },
   dataMap: {
-    gridColumn: "1 / 10",
-    gridRow: "1 / 8",
+    gridColumn: "1 / 7",
+    gridRow: "1 / 9",
     border: "solid",
     borderColor: borderColor,
   },
   drawMap: {
-    gridColumn: "6 / 12",
-    gridRow: "1 / 8",
+    gridColumn: "7 / 13",
+    gridRow: "1 / 9",
     border: "solid",
     borderColor: borderColor,
   },
-});
-class App extends Component {
-  state = {};
-
-  componentDidMount() {
+}));
+const App = () => {
+  const classes = useStyles();
+  const [mapData, setMapData] = useState(() => null);
+  useEffect(() => {
     axios.get("/api/data").then((res) => {
-      let geojson = res.data.filter((f) => {
+      let features = res.data.features;
+      let geojson = features.filter((f) => {
         return !(
           (f.geometry.coordinates[0] == undefined) &
           (f.geometry.coordinates[1] == undefined)
         );
       });
-      geojson.forEach((f) => {
-        f["properties"]["point"] = turf.point(f["geometry"]["coordinates"]);
-      });
+      setMapData(geojson);
     });
-  }
+  }, []);
 
-  render() {
-    const { classes } = this.props;
+  return (
+    <div className="app" style={{ height: "100%" }}>
+      <NavBar height={"8%"} className="navBar"></NavBar>
+      <Container className={classes.root} id="root-container" maxWidth={false}>
+        <div className={classes.dataMap}>
+          <Map geojson={mapData} mapId="dataMap"></Map>
+        </div>
+        <div className={classes.drawMap}>
+          <Map geojson={mapData} mapId="drawMap"></Map>
+        </div>
+      </Container>
+    </div>
+  );
+};
 
-    return (
-      <div className="app" style={{ height: "100%" }}>
-        <NavBar height={"8%"} className="navBar"></NavBar>
-        <Container
-          className={classes.root}
-          id="root-container"
-          maxWidth={false}
-        >
-          <div className={classes.dataMap}>
-            <Map geojson={this.state.mapFeatures}></Map>
-          </div>
-          <div className={classes.drawMap}>
-            <Map geojson={this.state.mapFeatures}></Map>
-          </div>
-        </Container>
-      </div>
-    );
-  }
-}
-
-export default withStyles(styles)(App);
+export default App;
