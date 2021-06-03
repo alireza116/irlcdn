@@ -1,5 +1,5 @@
 {
-  "name": "thesis-user-study",
+  "name": "IRLCDN",
   "version": "1.0.0",
   "scripts": {
     "client": "cd client && npm start",
