@@ -34,19 +34,7 @@ export default function NavBar(props) {
       <AppBar position="sticky" className={classes.navBar}>
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
-            PHIMATICS
-          </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.allTweetsButton}
-            onClick={props.handleReset}
-          >
-            Reset Filter
-          </Button>
-          <Typography variant="h6">
-            {props.count} of {props.totalCount} tweets visible in the current
-            map extent
+            IRLCDN
           </Typography>
         </Toolbar>
       </AppBar>
