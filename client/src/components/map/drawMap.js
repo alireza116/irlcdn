@@ -112,21 +112,21 @@ const Map = (props) => {
       props.handleMapExtent(mapRef.current.getBounds(), "data");
     });
 
-    geojsonLayer.current.eachLayer((layer) => {
-      if (layer.feature) {
-        // console.log(layer);
-        // layer.bindPopup(`${layer.feature.properties.COUNTY_NAM}`);
-        // let tooltip = L.Tooltip()
-        layer.bindTooltip(`${layer.feature.properties.COUNTY_NAM}`, {
-          permanent: true,
-          direction: "center",
-          opacity: 1,
-          className: "leafletLabel",
-        });
-        //   .openTooltip();
-      }
-      // console.log(layer);
-    });
+    // geojsonLayer.current.eachLayer((layer) => {
+    //   if (layer.feature) {
+    //     // console.log(layer);
+    //     // layer.bindPopup(`${layer.feature.properties.COUNTY_NAM}`);
+    //     // let tooltip = L.Tooltip()
+    //     layer.bindTooltip(`${layer.feature.properties.COUNTY_NAM}`, {
+    //       permanent: true,
+    //       direction: "center",
+    //       opacity: 1,
+    //       className: "leafletLabel",
+    //     });
+    //     //   .openTooltip();
+    //   }
+    //   // console.log(layer);
+    // });
 
     let style = (feature) => {
       return {

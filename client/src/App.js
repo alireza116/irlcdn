@@ -40,6 +40,24 @@ const useStyles = makeStyles((theme) => ({
     borderColor: borderColor,
     overflow: "auto",
   },
+  mapLabel: {
+    height: "5%",
+    textAlign: "center",
+    fontFamily: "sans-serif",
+    margin: 0,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  mapMain: {
+    height: "95%",
+    margin: 0,
+  },
+  mapText: {
+    flex: 1,
+    margin: 0,
+    justifyContent: "center",
+  },
 }));
 const App = () => {
   const classes = useStyles();
@@ -171,24 +189,34 @@ const App = () => {
           ></NestedList>
         </div>
         <div className={classes.dataMap}>
-          <DataMap
-            handleMapExtent={handleMapExtent}
-            extent={dataMapExtent}
-            geojson={mapData}
-            selectedFeature={selectedFeature}
-            densityValue={densityValue}
-            mapId="dataMap"
-          ></DataMap>
+          <div className={classes.mapLabel}>
+            <span className={classes.mapText}>Data Map</span>
+          </div>
+          <div className={classes.mapMain}>
+            <DataMap
+              handleMapExtent={handleMapExtent}
+              extent={dataMapExtent}
+              geojson={mapData}
+              selectedFeature={selectedFeature}
+              densityValue={densityValue}
+              mapId="dataMap"
+            ></DataMap>
+          </div>
         </div>
         <div className={classes.drawMap}>
-          <DrawMap
-            handleMapExtent={handleMapExtent}
-            extent={drawMapExtent}
-            geojson={mapData}
-            selectedFeature={selectedFeature}
-            densityValue={densityValue}
-            mapId="drawMap"
-          ></DrawMap>
+          <div className={classes.mapLabel}>
+            <p className={classes.mapText}>Annotate Map</p>
+          </div>
+          <div className={classes.mapMain}>
+            <DrawMap
+              handleMapExtent={handleMapExtent}
+              extent={drawMapExtent}
+              geojson={mapData}
+              selectedFeature={selectedFeature}
+              densityValue={densityValue}
+              mapId="drawMap"
+            ></DrawMap>
+          </div>
         </div>
       </Container>
     </div>
