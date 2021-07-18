@@ -97,8 +97,8 @@ const NestedList = (props) => {
       <hr></hr>
       <FormControl component="fieldset">
         <RadioGroup
-          aria-label="gender"
-          name="gender1"
+          aria-label="population"
+          name="population1"
           value={props.densityValue}
           onChange={handleChange}
         >

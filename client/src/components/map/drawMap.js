@@ -86,7 +86,15 @@ const Map = (props) => {
       var type = e.layerType,
         layer = e.layer;
 
-      layer.on("click", (f) => {
+      layer.feature = layer.feature || { type: "Feature", properties: {} };
+
+      layer.on("click", (e) => {
+        console.log(e);
+        // let target = e.target;
+        if (!("SNCO" in layer.feature.properties)) {
+          props.handleOpenDialog(layer);
+        }
+
         // console.log(layerGeojson);
         // props.handleFeatureSearch(layer, type);
       });
@@ -156,7 +164,7 @@ const Map = (props) => {
       }
       // console.log(layer);
     });
-  }, [props.geojson, props.mapId, props.selectedFeature, props.densityValue]);
+  }, [props.geojson, props.mapId]);
 
   useEffect(() => {
     if (props.extent == null) return;

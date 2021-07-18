@@ -8,19 +8,20 @@ const fs = require("fs");
 
 console.log(__dirname);
 
-let rawdata = fs.readFileSync(
-  // path.join(__dirname, "public/vietEmotGeoTopic_2.json"),
-  // path.join(__dirname, "public/processed_data_feb_23.json"),
+var rawdata = fs.readFileSync(
   path.join(__dirname, "public/illinois_ethnicity.geojson"),
   {
     encoding: "utf-8",
   }
 );
-// console.log(rawdata);
 
-// console.log(topicTermsDict);
+var geojson_ethnicity = JSON.parse(rawdata);
 
-let geojson = JSON.parse(rawdata);
+var rawdata = fs.readFileSync(path.join(__dirname, "public/CBOS.geojson"), {
+  encoding: "utf-8",
+});
+
+let geojson_cbos = JSON.parse(rawdata);
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -30,7 +31,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // API calls
 app.get("/api/data", (req, res) => {
-  res.json(geojson);
+  res.json({ ethnicity: geojson_ethnicity, cbos: geojson_cbos });
 });
 
 if (process.env.NODE_ENV === "production") {

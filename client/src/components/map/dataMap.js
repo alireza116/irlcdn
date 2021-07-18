@@ -19,17 +19,20 @@ const Map = (props) => {
     // console.log(props.densityValue);
     let denominator =
       props.densityValue === "density" ? properties.TOTALPOP : 1;
+
+    let value;
     // console.log(denominator);
     if (keys.length === 1) {
-      return properties.counts[keys[0]].value / denominator;
+      value = properties.counts[keys[0]].value / denominator;
     } else if (keys.length === 2) {
-      return properties.counts[keys[0]].children[keys[1]].value / denominator;
+      value = properties.counts[keys[0]].children[keys[1]].value / denominator;
     } else if (keys.length === 3) {
-      return (
+      value =
         properties.counts[keys[0]].children[keys[1]].children[keys[2]].value /
-        denominator
-      );
+        denominator;
     }
+
+    return props.densityValue === "density" ? (value * 100).toFixed(4) : value;
   };
   useEffect(() => {
     if (props.mapId === null) return;
@@ -67,33 +70,6 @@ const Map = (props) => {
     editableLayer.current = new L.FeatureGroup();
     mapRef.current.addLayer(editableLayer.current);
     layerControl.current.addOverlay(editableLayer.current, "Drawn Features");
-
-    // + cluster.getChildCount() +
-
-    // let drawControl = new L.Control.Draw({
-    //   draw: {
-    //     polyline: false,
-    //     marker: false,
-    //     circlemarker: false,
-    //   },
-    //   edit: {
-    //     featureGroup: editableLayer.current, //REQUIRED!!
-    //     remove: true,
-    //   },
-    // });
-    // mapRef.current.addControl(drawControl);
-
-    // mapRef.current.on(L.Draw.Event.CREATED, function (e) {
-    //   var type = e.layerType,
-    //     layer = e.layer;
-
-    //   layer.on("click", (f) => {
-    //     // console.log(layerGeojson);
-    //     // props.handleFeatureSearch(layer, type);
-    //   });
-
-    //   editableLayer.current.addLayer(layer);
-    // });
 
     geojsonLayer.current = L.geoJSON();
     mapRef.current.addLayer(geojsonLayer.current);
@@ -149,10 +125,10 @@ const Map = (props) => {
         if (layer.feature) {
           // console.log(layer);
           layer.bindPopup(
-            `${layer.feature.properties.COUNTY_NAM}:<br>${getValue(
-              layer.feature.properties,
-              props.selectedFeature
-            )}`
+            `${layer.feature.properties.COUNTY_NAM}:<br>
+            ${getValue(layer.feature.properties, props.selectedFeature)} ${
+              props.densityValue === "density" ? "%" : ""
+            }`
           );
         }
         // console.log(layer);

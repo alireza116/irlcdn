@@ -7,6 +7,7 @@ import axios from "axios";
 import "./App.css";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import NestedList from "./components/nestedList/nestedList";
+import Dialog from "./components/dialog/dialog";
 
 let borderColor = "grey";
 
@@ -59,18 +60,53 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
   },
 }));
+
 const App = () => {
   const classes = useStyles();
   const [mapData, setMapData] = useState(() => null);
-  const [selectedFeature, setSelectedFeature] = useState(() => [
-    "Asia",
-    "South Central Asia",
-  ]);
+  const [selectedFeature, setSelectedFeature] = useState(() => []);
   const [featureNames, setFeatureNames] = useState(() => []);
   const [densityValue, setDensityValue] = useState("estimate");
   const [drawMapExtent, setDrawMapExtent] = useState(() => null);
   const [dataMapExtent, setDataMapExtent] = useState(() => null);
   const [sync, setSync] = useState(() => true);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [clickTarget, setClickTarget] = useState(() => null);
+
+  const SNCOColorMap = {
+    Strengths: "blue",
+    "Needs/Gaps": "orange",
+    Challenges: "red",
+    Opportunities: "green",
+  };
+
+  const handleOpenDialog = (target) => {
+    setClickTarget(target);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = (value) => {
+    setOpenDialog(false);
+  };
+
+  const setDialogResponse = (resp) => {
+    console.log(clickTarget);
+    Object.entries(resp).forEach(([key, value]) => {
+      console.log(key, value);
+      clickTarget.feature.properties[key] = value;
+    });
+    // console.log(clickTarget.properties);
+    clickTarget.setStyle({
+      fillColor: SNCOColorMap[resp.SNCO],
+      weight: 0.1,
+      stroke: "black",
+      fillOpacity: 0.5,
+    });
+    clickTarget.bindPopup(
+      `${clickTarget.feature.properties.SNCO}:<br>${clickTarget.feature.properties.SNCO_Body}`
+    );
+    console.log(resp);
+  };
 
   const handleDensityEstimate = (newValue) => {
     console.log(newValue);
@@ -79,9 +115,8 @@ const App = () => {
 
   const handleMapExtent = (extent, type) => {
     if (!sync) return;
-    console.log(extent);
+
     if (type === "draw") {
-      console.log(extent);
       setDrawMapExtent(extent);
     } else if (type === "data") {
       setDataMapExtent(extent);
@@ -119,7 +154,8 @@ const App = () => {
   };
   useEffect(() => {
     axios.get("/api/data").then((res) => {
-      let features = res.data.features;
+      console.log(res.data);
+      let features = res.data.ethnicity.features;
       let geojson = features.filter((f) => {
         f.properties.counts = {};
         f.properties.counts = Object.entries(f.properties)
@@ -212,13 +248,18 @@ const App = () => {
               handleMapExtent={handleMapExtent}
               extent={drawMapExtent}
               geojson={mapData}
+              handleOpenDialog={handleOpenDialog}
               selectedFeature={selectedFeature}
-              densityValue={densityValue}
               mapId="drawMap"
             ></DrawMap>
           </div>
         </div>
       </Container>
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        setResponse={setDialogResponse}
+      ></Dialog>
     </div>
   );
 };
