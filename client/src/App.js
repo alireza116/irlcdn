@@ -64,6 +64,7 @@ const useStyles = makeStyles((theme) => ({
 const App = () => {
   const classes = useStyles();
   const [mapData, setMapData] = useState(() => null);
+  const [cboData, setCboData] = useState(() => null);
   const [selectedFeature, setSelectedFeature] = useState(() => []);
   const [featureNames, setFeatureNames] = useState(() => []);
   const [densityValue, setDensityValue] = useState("estimate");
@@ -209,6 +210,7 @@ const App = () => {
       let fnContinent = Object.keys(geojson[0].properties.counts);
       setFeatureNames([fnContinent]);
       setMapData(geojson);
+      setCboData(res.data.cbos);
     });
   }, []);
 
@@ -233,6 +235,7 @@ const App = () => {
               handleMapExtent={handleMapExtent}
               extent={dataMapExtent}
               geojson={mapData}
+              cbos={cboData}
               selectedFeature={selectedFeature}
               densityValue={densityValue}
               mapId="dataMap"
@@ -248,6 +251,7 @@ const App = () => {
               handleMapExtent={handleMapExtent}
               extent={drawMapExtent}
               geojson={mapData}
+              cbos={cboData}
               handleOpenDialog={handleOpenDialog}
               selectedFeature={selectedFeature}
               mapId="drawMap"

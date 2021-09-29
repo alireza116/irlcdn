@@ -80,7 +80,8 @@ const Map = (props) => {
   //   add marker
 
   useEffect(() => {
-    if (props.geojson === null || props.mapId === null) return;
+    if (props.geojson === null || props.mapId === null || props.cbos === null)
+      return;
     geojsonLayer.current.clearLayers();
 
     geojsonLayer.current.addData(props.geojson);
@@ -133,8 +134,44 @@ const Map = (props) => {
         }
         // console.log(layer);
       });
+      var geojsonMarkerOptions = {
+        radius: 8,
+        fillColor: "#ff7800",
+        color: "#000",
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8,
+      };
+
+      function onEachFeature(feature, layer) {
+        // does this feature have a property named popupContent?
+        if (feature.properties) {
+          layer.bindPopup(`<div>
+            <p>${feature.properties["Agency Name"]}:</p>
+            <p>${feature.properties["Address"]}</p>
+            <p>Serves ${feature.properties["Geographic Service Area"]} communities</p>
+            <p>Phone: ${feature.properties["Telephone Number"]}</p>
+            <p>Offers ${feature.properties["Coded Languages other than English"]} languages</p>
+            </div>`);
+        } else {
+          layer.bindPopup("information not available yet.");
+        }
+      }
+
+      L.geoJSON(props.cbos, {
+        onEachFeature: onEachFeature,
+        pointToLayer: function (feature, latlng) {
+          return L.circleMarker(latlng, geojsonMarkerOptions);
+        },
+      }).addTo(mapRef.current);
     }
-  }, [props.geojson, props.mapId, props.selectedFeature, props.densityValue]);
+  }, [
+    props.geojson,
+    props.cbos,
+    props.mapId,
+    props.selectedFeature,
+    props.densityValue,
+  ]);
 
   // useEffect(() => {
   //   if (props.extent == null) return;
